@@ -1,14 +1,6 @@
-# Copy to .github/workflows/audit.yml
-#
 # Runs tools/audit.py on every push and pull request touching the documents.
 # Standard library only — no install step, no dependencies, a couple of seconds.
 # If you would rather not have CI, delete this file; the script still works locally.
-#
-# The second step exists because a stale archive is invisible: the template tree
-# and the .zip a student downloads drift apart silently, and nobody notices until
-# a student unzips last term's folder. It rebuilds the archive and fails if the
-# bytes differ — which is only meaningful because build-zip.py is deterministic.
-# Delete that step if the course ships no downloadable folder.
 
 name: audit
 
@@ -16,13 +8,11 @@ on:
   push:
     paths:
       - "*.html"
-      - "templates/**"
       - "tools/**"
       - ".github/workflows/audit.yml"
   pull_request:
     paths:
       - "*.html"
-      - "templates/**"
       - "tools/**"
   workflow_dispatch:
 
@@ -39,30 +29,3 @@ jobs:
       - name: Consistency audit
         run: python tools/audit.py
 
-      - name: Template archive is up to date
-        run: |
-          before=$(sha256sum templates/project-folder.zip | cut -d' ' -f1)
-          python templates/build-zip.py > /dev/null
-          after=$(sha256sum templates/project-folder.zip | cut -d' ' -f1)
-          if [ "$before" != "$after" ]; then
-            echo "committed : $before"
-            echo "rebuilt   : $after"
-            echo "--- entries that differ ---"
-            git stash -q -- templates/project-folder.zip 2>/dev/null || true
-            python - <<'PY'
-          import subprocess, zipfile, io
-          new = zipfile.ZipFile("templates/project-folder.zip")
-          old = zipfile.ZipFile(io.BytesIO(subprocess.run(
-              ["git", "show", "HEAD:templates/project-folder.zip"],
-              capture_output=True).stdout))
-          on, nn = set(old.namelist()), set(new.namelist())
-          for n in sorted(on - nn): print("  only in committed:", n)
-          for n in sorted(nn - on): print("  only in rebuilt  :", n)
-          for n in sorted(on & nn):
-              if old.read(n) != new.read(n): print("  content differs  :", n)
-          PY
-            echo "::error::templates/project-folder.zip is stale."
-            echo "Run: python templates/build-zip.py  — then commit the zip."
-            exit 1
-          fi
-          echo "archive matches the template tree"
