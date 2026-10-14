@@ -1,0 +1,2 @@
+# Keep line endings LF everywhere (the manual is edited by scripts).
+* text=auto eol=lf
