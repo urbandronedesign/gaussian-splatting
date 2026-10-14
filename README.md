@@ -4,6 +4,7 @@ A bilingual (FR/EN) course manual for a one-day introduction to Gaussian splatti
 theory in the morning, fieldwork on the Île de Nantes (Quartier de la Création) in the afternoon.
 
 - **Manual:** [`splatting_manuel-v1.html`](splatting_manuel-v1.html), a single self-contained file that works offline.
+- **Presentation:** [`presentation.html`](presentation.html), a 27-slide deck for a 1920×1080 screen. Use the arrow keys to move, F for fullscreen, L to switch FR/EN and T to switch theme.
 - **Companion page:** [`outils.html`](outils.html), with tools, versions, formats and hardware. It is dated and updated separately.
 
 | Part | Chapters |

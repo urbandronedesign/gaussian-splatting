@@ -52,7 +52,7 @@ CONFIG = {
     "manual": "splatting_manuel-v1.html",
 
     # Every HTML page in the repo. Passes 1 and 2 read all of them.
-    "pages": ["splatting_manuel-v1.html", "outils.html", "index.html"],
+    "pages": ["splatting_manuel-v1.html", "outils.html", "presentation.html", "index.html"],
 
     # Extra text files the identifier sweep should also read (Markdown, CSV…).
     "also_sweep": ["README.md"],
