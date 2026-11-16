@@ -1037,8 +1037,13 @@ function go(i){cur=Math.max(0,Math.min(slides.length-1,i));
   document.getElementById('num').textContent=(cur+1)+' / '+slides.length;
   document.getElementById('bar').style.width=((cur+1)/slides.length*100)+'%';
   if(location.hash!=='#'+(cur+1)) history.replaceState(null,'','#'+(cur+1));}
+/* ---------- Language in the URL ----------
+   ?lang=fr|en wins over the saved choice and switching rewrites it, so a copied
+   link opens in the language it was read in. The #anchor is kept. */
+function urlLang(){ var m=/[?&]lang=(fr|en)(?:&|$)/.exec(location.search); return m?m[1]:null; }
+function langUrl(l){ try{ var u=new URL(location.href); if(u.searchParams.get('lang')===l) return; u.searchParams.set('lang',l); history.replaceState(history.state,'',u.href); }catch(e){} }
 function setLang(l){document.body.classList.remove('lang-fr','lang-en');document.body.classList.add('lang-'+l);
-  document.documentElement.lang=l;try{localStorage.setItem('cb-lang',l)}catch(e){}}
+  document.documentElement.lang=l;try{localStorage.setItem('cb-lang',l)}catch(e){} langUrl(l);}
 function setTheme(t){document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('gs-deck-theme',t)}catch(e){}}
 document.addEventListener('keydown',function(e){
   var k=e.key;
@@ -1053,7 +1058,7 @@ document.addEventListener('click',function(e){if(e.target.closest('a'))return;go
 var tx=null;document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
 document.addEventListener('touchend',function(e){if(tx===null)return;var d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)go(cur+(d<0?1:-1));tx=null});
 addEventListener('resize',fit);
-(function(){var l='fr',t='dark';try{l=localStorage.getItem('cb-lang')||'fr';t=localStorage.getItem('gs-deck-theme')||'dark'}catch(e){}
+(function(){var l='fr',t='dark';try{l=urlLang()||localStorage.getItem('cb-lang')||'fr';t=localStorage.getItem('gs-deck-theme')||'dark'}catch(e){}
   setLang(l);setTheme(t);fit();go((parseInt(location.hash.slice(1),10)||1)-1);})();
 </script>
 </body>
